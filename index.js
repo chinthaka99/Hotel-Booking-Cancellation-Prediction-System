@@ -13,30 +13,10 @@ app.use(express.static(staticFilesDirectory));
 
 // Use body-parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// // Define a new route named "predict" this is the working code
-// app.post('/predict', (req, res) => {
-//   // Execute the Python script
-//   console.log(req.body);
-//   exec('python new.py', (error, stdout, stderr) => {
-//     if (error) {
-//       console.error(`Error executing Python script: ${error}`);
-//       return res.status(500).send('Internal Server Error');
-//     }
-//     if (stderr) {
-//       console.error(`Python script stderr: ${stderr}`);
-//     }
-//     // Send the output of the Python script as the response
-//     res.send(stdout);
-//   });
-// });
-
 const fs = require('fs');
 
-
-
 // Start the server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

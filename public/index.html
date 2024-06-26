@@ -97,11 +97,11 @@
         <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="adr">ADR</label>
         <input id="adr" name="adr" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="ADR" />
         
-        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="required_car_parking_spaces">Required Car Parking Spaces</label>
-        <input id="required_car_parking_spaces" name="required_car_parking_spaces" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Required Car Parking Spaces" />
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="required_car_parking_spaces">Number of Car Parking Spaces</label>
+        <input id="required_car_parking_spaces" name="required_car_parking_spaces" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Number of Car Parking Spaces" />
         
-        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="total_of_special_requests">Total of Special Requests</label>
-        <input id="total_of_special_requests" name="total_of_special_requests" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Total of Special Requests" />
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="total_of_special_requests">Total Special Request</label>
+        <input id="total_of_special_requests" name="total_of_special_requests" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Total Special Request" />
         
         <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="hotel">Hotel</label>
         <select id="hotel" name="hotel" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
@@ -113,20 +113,12 @@
         <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="meal">Meal</label>
         <select id="meal" name="meal" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
           <option selected>Select Meal</option>
-          <option value="BB">BB</option>
           <option value="FB">FB</option>
           <option value="HB">HB</option>
           <option value="SC">SC</option>
           <option value="Undefined">Undefined</option>
         </select>
-      </div>
-      <button type="button" onclick="nextStep(4)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Next</button>
-    </div>
-
-    <!-- Step 4: More Categorical Variables -->
-    <div class="step" id="step4">
-      <h3 class="text-xl font-bold mb-4">Step 4:</h3>
-      <div class="mb-4">
+        
         <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="market_segment">Market Segment</label>
         <select id="market_segment" name="market_segment" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
           <option selected>Select Market Segment</option>
@@ -180,39 +172,54 @@
           <option value="Transient-Party">Transient-Party</option>
         </select>
       </div>
-      <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+      <button type="button" onclick="nextStep(4)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Next</button>
+    </div>
+
+    <!-- Step 4: Prediction -->
+    <div class="step" id="step4">
+      <h3 class="text-xl font-bold mb-4">Prediction:</h3>
+      <div id="result" class="mb-4 text-gray-700 text-sm font-bold"></div>
+      <button type="button" onclick="submitForm()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
     </div>
   </form>
-  <div id="result" class="mt-4 p-4 border rounded bg-white bg-opacity-50"></div>
 </div>
 
-<!-- Include JavaScript to handle form submission -->
+<!-- JavaScript to handle form steps and submission -->
 <script>
   function nextStep(step) {
-    const steps = document.querySelectorAll('.step');
-    steps.forEach(stepDiv => stepDiv.style.display = 'none');
-    document.getElementById(`step${step}`).style.display = 'block';
+    document.querySelectorAll('.step').forEach((element) => {
+      element.style.display = 'none';
+    });
+    document.getElementById('step' + step).style.display = 'block';
   }
-  
-  document.getElementById('stepForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const json = JSON.stringify(Object.fromEntries(formData));
-    
-    const response = await fetch('/predict', {
+
+  function submitForm() {
+    const form = document.getElementById('stepForm');
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    fetch('http://localhost:5000/predict', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: json
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(result => {
+      document.getElementById('result').innerText = 'Cancellation Prediction: ' + (result.cancellation ? 'Yes' : 'No');
+    })
+    .catch(error => {
+      console.error('Error:', error);
     });
-    
-    const result = await response.json();
-    document.getElementById('result').innerText = 'Prediction: ' + result.cancellation;
-  });
+  }
 
-  // Initialize the form
-  nextStep(1);
+  document.addEventListener('DOMContentLoaded', () => {
+    nextStep(1); // Show the first step initially
+  });
 </script>
 </body>
 </html>
