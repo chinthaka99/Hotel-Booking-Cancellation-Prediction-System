@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Product Prediction</title>
+<!-- Include Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<style>
+  /* Add custom styles for background image and glass view */
+  body {
+    background-image: url('background.jpg'); 
+    background-size: cover;
+    background-position: center;
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+</style>
+</head>
+<body>
+
+<div class="container mx-auto px-4 py-8">
+  <form id="stepForm" method="post" action="http://localhost:3000/predict" class="bg-white bg-opacity-50 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+    <!-- Step 1: Categorical Variables -->
+    <div class="step" id="step1">
+      <h3 class="text-xl font-bold mb-4">Step 1:</h3>
+      <div class="mb-4">
+
+        <!-- Lead Time-->
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="lead_time">Lead Time</label>
+        <input name="lead_time" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Lead Time" />
+
+        <!-- Month-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="month">Month</label>
+        <select name="arrival_date_month" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option selected>Select Month</option>
+          <option value="BB">January</option>
+          <option value="HB">February</option>
+          <option value="FB">March</option>
+          <option value="FB">April</option>
+          <option value="BB">May</option>
+          <option value="HB">June</option>
+          <option value="FB">July</option>
+          <option value="FB">August</option>
+          <option value="BB">September</option>
+          <option value="HB">October</option>
+          <option value="FB">November</option>
+          <option value="FB">December</option>
+        </select>
+
+        <!-- Week-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="week">Week Number</label>
+        <input name="arrival_date_week_number" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Week Number" />
+        </select>
+
+        <!-- Date-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="date">Date</label>
+        <input name="arrival_date_day_of_month" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Date" />
+        </select>
+
+        <!-- Stay in weekend nights-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="weekend_nights">Stay in Weekend Nights</label>
+        <input name="stays_in_weekend_nights" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ex- 5" />
+        </select>
+
+        <!-- Stay in weekend nights-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="week_nights">Stay in Week Nights</label>
+        <input name="stays_in_week_nights" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Ex- 4" />
+        </select>
+      </div>
+      <button type="button" onclick="nextStep(2)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Next</button>
+    </div>
+
+
+
+    <!-- Step 2: More Categorical Variables -->
+    <div class="step" id="step2">
+      <h3 class="text-xl font-bold mb-4">Step 2:</h3>
+      <div class="mb-4">
+
+        <!-- Number of Adults-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="adults">Number of Adults</label>
+        <input name="adults" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Number of Adults" />
+        </select>
+
+        <!--Number of Children-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="children">Number of Children</label>
+        <input name="children" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Number of Children" />
+        </select>
+
+         <!--Number of Babies-->
+         <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="babies">Number of Babies</label>
+         <input name="babies" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Number of Babies" />
+         </select>
+
+         <!-- Repeated Guest-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="is_repeated_guest">Repeated Guest (0 - No & 1 - Yes) </label>
+        <select name="is_repeated_guest" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option selected>Select Repeated Guest</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+        </select>
+
+        <!--Previous Cancellation-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="previous_cancellations">Number of Previous Cancellations</label>
+        <input name="previous_cancellations" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Number of Previous Cancellations" />
+        </select>
+
+        <!--Previous Cancellation-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="previous_bookings_not_canceled">Number of Previous Bookings but not Canceled</label>
+        <input name="previous_bookings_not_canceled" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Number of Previous Bookings but not Canceled" />
+        </select>
+      </div>
+      <button type="button" onclick="prevStep(1)" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2 focus:outline-none focus:shadow-outline">Previous</button>
+      <button type="button" onclick="nextStep(3)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Next</button>
+    </div>
+
+
+    <!-- Step 3: -->
+    <div class="step" id="step3">
+      <h3 class="text-xl font-bold mb-4">Step 3:</h3>
+      <div class="mb-4">
+
+        <!-- Agent -->
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="agent">Agent</label>
+        <input name="agent" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Agent" />
+      
+         <!-- ADR -->
+         <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="adr">ADR</label>
+         <input name="adr" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="ADR" />
+     
+        <!-- required_car_parking_spaces -->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="required_car_parking_spaces">Required Car Parking Spaces</label>
+        <input name="required_car_parking_spaces" type="number" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Required Car Parking Spaces" />
+    
+        <!-- total_of_special_requests -->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="total_of_special_requests">Total of Special Requests</label>
+        <select name="total_of_special_requests" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option selected>Select Total of Special Requests</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+
+        <!-- Hotel-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="hotel">Hotel</label>
+        <select name="hotel" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option selected>Select Hotel</option>
+          <option value="City Hotel">City Hotel</option>
+          <option value="Resort Hotel">Resort Hotel</option>
+        </select>
+
+        <!-- Meal-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="hotel">Meal</label>
+        <select name="meal" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          <option selected>Select Meal</option>
+          <option value="BB">BB</option>
+          <option value="FB">FB</option>
+          <option value="HB">HB</option>
+          <option value="SC">SC</option>
+          <option value="Undefined">No Idea</option>
+        </select>
+      
+      </div>
+      <button type="button" onclick="prevStep(2)" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2 focus:outline-none focus:shadow-outline">Previous</button>
+      <button type="button" onclick="nextStep(4)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Next</button>
+    </div>
+
+
+
+    <!-- Step 4: More Numerical Variables -->
+    <div class="step" id="step4">
+      <h3 class="text-xl font-bold mb-4">Step 4: More Numerical Variables</h3>
+      <div class="mb-4">
+
+        <!-- Market Segment-->
+        <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="market_segment">Market Segment</label>
+        <select name="market_segment" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <option selected>Select Market Segment</option>
+            <option value="market_segment_Complementary">Complementary</option>
+            <option value="market_segment_Corporate">Corporate</option>
+            <option value="market_segment_Direct">Direct</option>
+            <option value="market_segment_Groups">Groups</option>
+            <option value="market_segment_Offline TA/TO">Offline TA/TO</option>
+            <option value="market_segment_Online TA">Online TA</option>
+            <option value="market_segment_Undefined">No Idea</option>
+          </select>
+
+          <!-- Distribution Channel-->
+          <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="distribution_channel">Distribution Channel</label>
+          <select name="distribution_channel" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              <option selected>Select Distribution Channel</option>
+              <option value="Direct">Direct</option>
+              <option value="Corporate">Corporate</option>
+              <option value="TA/TO">TA/TO</option>
+              <option value="GDS">GDS</option>
+              <option value="No Idea">No Idea</option>
+          </select>
+
+          <!-- Reserved Room Type-->
+          <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="hotel">Reserved Room Type</label>
+          <select name="reserved_room_type" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+              <option selected>Select Reserved Room Type</option>
+              <option value="A">A</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="F">F</option>
+              <option value="G">G</option>
+              <option value="H">H</option>
+              <option value="L">L</option>
+              <option value="P">P</option>
+          </select>
+
+          <!-- Deposit Type-->
+          <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="deposite_type">Deposit Type</label>
+          <select name="deposit_type" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <option selected>Select Deposit Type</option>
+            <option value="BB">No Deposit</option>
+            <option value="HB">Refundable</option>
+            <option value="FB">Non Refund</option>
+          </select>
+
+           <!-- Customer Type-->
+          <label class="block text-gray-700 text-sm font-bold mb-2 mt-5" for="customer_type">Customer Type</label>
+          <select name="customer_type" class="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <option selected>Select Customer Type</option>
+            <option value="Transient">Transient</option>
+            <option value="Contract">Contract</option>
+            <option value="Transient-Party">Transient-Party</option>
+            <option value="Group">Group</option>
+          </select>
+      
+      
+      
+      
+      </div>
+      <!-- Add more fields for other numerical variables -->
+      <button type="button" onclick="prevStep(3)" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2 focus:outline-none focus:shadow-outline">Previous</button>
+      <button type="button" onclick="nextStep(5)" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Next</button>
+    </div>
+    <!-- Step 5: Final Variables -->
+    <div class="step" id="step5">
+      <h3 class="text-xl font-bold mb-4">Step 5: Final Variables</h3>
+      <!-- Add more fields for final variables -->
+      <button type="button" onclick="prevStep(4)" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2 focus:outline-none focus:shadow-outline">Previous</button>
+      <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  function showStep(step) {
+    const steps = document.querySelectorAll('.step');
+    steps.forEach((s) => {
+      s.style.display = 'none';
+    });
+    document.getElementById('step' + step).style.display = 'block';
+  }
+
+  function nextStep(step) {
+    showStep(step);
+  }
+
+  function prevStep(step) {
+    showStep(step);
+  }
+
+  showStep(1);
+</script>
+</body>
+</html>
