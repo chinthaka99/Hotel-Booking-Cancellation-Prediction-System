@@ -43,33 +43,16 @@ def predict():
             'customer_type': data['customer_type']
         }
 
-        # Print the features to debug
-        print("Features before DataFrame conversion:")
-        for key, value in features.items():
-            print(f"{key}: {value}")
-
         # Convert features to DataFrame
         features_df = pd.DataFrame([features])
-
-        # Print the DataFrame to debug
-        print("\nFeatures DataFrame:")
-        print(features_df)
 
         # Convert 'arrival_date_month' to numerical values
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         features_df['arrival_date_month'] = features_df['arrival_date_month'].apply(lambda x: months.index(x) + 1)
 
-        # Print the DataFrame after month conversion
-        print("\nFeatures DataFrame after month conversion:")
-        print(features_df)
-
         # One-hot encode the specified columns
         one_hot_cols = ['hotel', 'meal', 'market_segment', 'distribution_channel', 'reserved_room_type', 'deposit_type', 'customer_type']
         features_df = pd.get_dummies(features_df, columns=one_hot_cols, drop_first=False)
-
-        # Print the DataFrame after one-hot encoding
-        print("\nFeatures DataFrame after one-hot encoding:")
-        print(features_df)
 
         # Ensure that all dummy columns are present
         model_columns = ['lead_time', 'arrival_date_month', 'arrival_date_week_number', 'arrival_date_day_of_month',
@@ -84,28 +67,12 @@ def predict():
                          'reserved_room_type_G', 'reserved_room_type_H', 'reserved_room_type_L', 'deposit_type_Non Refund',
                          'deposit_type_Refundable', 'customer_type_Group', 'customer_type_Transient', 'customer_type_Transient-Party']
 
-        # Print the expected model columns
-        print("\nExpected model columns:")
-        print(model_columns)
-
-        # Print the DataFrame columns before adding missing columns
-        print("\nDataFrame columns before adding missing columns:")
-        print(features_df.columns)
-
         for col in model_columns:
             if col not in features_df.columns:
                 features_df[col] = 0
 
-        # Print the DataFrame after ensuring all columns are present
-        print("\nFeatures DataFrame after ensuring all columns are present:")
-        print(features_df)
-
         # Ensure columns are in the correct order
         features_df = features_df[model_columns]
-
-        # Print the final DataFrame to debug
-        print("\nFinal Features DataFrame:")
-        print(features_df)
 
         # Convert to numpy array
         features_array = features_df.values
